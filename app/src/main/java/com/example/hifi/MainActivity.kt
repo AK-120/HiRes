@@ -1,6 +1,7 @@
 package com.example.hifi
 
 import android.Manifest
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
@@ -8,8 +9,10 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
+import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.systemBarsPadding
@@ -32,8 +35,20 @@ class MainActivity : ComponentActivity() {
     private val vm: MainViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        enableEdgeToEdge()
         super.onCreate(savedInstanceState)
+        if (savedInstanceState == null) handleIntent(intent)
         setContent { HiFiTheme { Root() } }
+    }
+
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        handleIntent(intent)
+    }
+
+    /** Spotify sign-in returns here via com.example.hifi://spotify-callback. */
+    private fun handleIntent(intent: Intent?) {
+        intent?.data?.let { vm.onSpotifyCallback(it) }
     }
 
     @Composable
@@ -65,8 +80,8 @@ class MainActivity : ComponentActivity() {
         Box(
             Modifier
                 .fillMaxSize()
+                .background(MaterialTheme.colorScheme.background)
                 .systemBarsPadding()
-                .let { it }
         ) {
             when (screen) {
                 Screen.NowPlaying -> NowPlayingScreen(vm)

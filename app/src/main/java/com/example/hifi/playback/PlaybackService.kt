@@ -4,7 +4,9 @@ import android.content.Intent
 import androidx.media3.common.AudioAttributes
 import androidx.media3.common.C
 import androidx.media3.exoplayer.ExoPlayer
+import androidx.media3.session.DefaultMediaNotificationProvider
 import androidx.media3.session.MediaSession
+import com.example.hifi.R
 import androidx.media3.session.MediaSessionService
 
 /**
@@ -29,6 +31,11 @@ class PlaybackService : MediaSessionService() {
             .setHandleAudioBecomingNoisy(true)
             .build()
         session = MediaSession.Builder(this, player).build()
+        setMediaNotificationProvider(
+            DefaultMediaNotificationProvider.Builder(this).build().also {
+                it.setSmallIcon(R.drawable.ic_notification)
+            }
+        )
     }
 
     override fun onGetSession(controllerInfo: MediaSession.ControllerInfo): MediaSession? = session

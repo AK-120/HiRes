@@ -43,7 +43,7 @@ class LocalMusicProvider(private val context: Context) : MusicProvider {
 
             while (c.moveToNext()) {
                 val id = c.getLong(iId)
-                val albumId = c.getLong(iAlbumId).takeIf { it > 0 }
+                val albumIdLong = c.getLong(iAlbumId).takeIf { it > 0 }
                 val artist = c.getString(iArtist)?.takeUnless { it == "<unknown>" }
                 val rawTrack = c.getInt(iTrack)
                 // MediaStore encodes disc number in thousands (e.g. 1005)
@@ -53,8 +53,8 @@ class LocalMusicProvider(private val context: Context) : MusicProvider {
                     title = c.getString(iTitle) ?: "Unknown title",
                     artist = artist,
                     album = c.getString(iAlbum),
-                    albumId = albumId,
-                    artworkUri = albumId?.let { albumArtUri(it) },
+                    albumId = albumIdLong?.toString(),
+                    artworkUri = albumIdLong?.let { albumArtUri(it) },
                     contentUri = ContentUris.withAppendedId(collection, id).toString(),
                     durationMs = c.getLong(iDur),
                     trackNumber = trackNo,

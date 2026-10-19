@@ -4,6 +4,16 @@ plugins {
     id("org.jetbrains.kotlin.plugin.compose")
 }
 
+// Spotify Client ID: set SPOTIFY_CLIENT_ID in local.properties (not committed) or gradle.properties.
+val localProps = java.util.Properties().apply {
+    val f = rootProject.file("local.properties")
+    if (f.exists()) f.inputStream().use { load(it) }
+}
+val spotifyClientId: String =
+    localProps.getProperty("SPOTIFY_CLIENT_ID")
+        ?: providers.gradleProperty("SPOTIFY_CLIENT_ID").orNull
+        ?: ""
+
 android {
     namespace = "com.example.hifi"
     compileSdk = 35
@@ -13,7 +23,8 @@ android {
         minSdk = 26
         targetSdk = 35
         versionCode = 1
-        versionName = "0.1.0"
+        versionName = "0.2.0"
+        buildConfigField("String", "SPOTIFY_CLIENT_ID", "\"$spotifyClientId\"")
     }
 
     buildTypes {
@@ -30,6 +41,7 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
 }
 

@@ -29,7 +29,8 @@ data class PlaybackState(
     val durationMs: Long = 0,
     val shuffle: Boolean = false,
     val repeatMode: Int = Player.REPEAT_MODE_OFF,
-    val volume: Float = 1f
+    val volume: Float = 1f,
+    val outputName: String? = null
 )
 
 /** UI-facing wrapper around a MediaController connected to PlaybackService. */
@@ -81,6 +82,8 @@ class PlaybackManager(
         val c = controller ?: return
         if (c.isPlaying) c.pause() else c.play()
     }
+
+    fun pause() { controller?.pause() }
 
     fun next() { controller?.seekToNextMediaItem() }
 
